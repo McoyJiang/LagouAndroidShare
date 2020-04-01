@@ -1,0 +1,1 @@
+include ':app', ':asm_lifecycle_plugin'
