@@ -26,6 +26,7 @@ public class ClassInitTest{
     }
 }
 ```
+执行结果如下：
 ```
 ClassInit static block!
 ```
@@ -47,6 +48,8 @@ ClassInit non-static block!
 ```
 
 #### InitOrder.java
+对象的初始化顺序如下：
+静态变量/静态代码块 -> 普通代码块 -> 构造函数
 ```
 public class InitOrder {
     public static void main(String[] args){
@@ -98,8 +101,7 @@ Parent constructor!
 Child non-static block!
 Child constructor!
 ```
-对象的初始化顺序如下：
-静态变量/静态代码块 -> 普通代码块 -> 构造函数
+说明：
 1. 父类静态变量和静态代码块；
 2. 子类静态变量和静态代码块；
 3. 父类普通成员变量和普通代码块；
