@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    format取值：
+    boolean 属性取值为boolean类型
+    string 属性取值为文本类型
+    color 属性取值为颜色类型
+    dimension 属性值为尺寸
+    enum 属性取值是枚举类型，例如：LinearLayout中的android:orientation="horizontal"属性
+    flag 属性取值进行或运算
+    fraction 属性取值为小数
+    float 属性取值为浮点数
+    integer 属性取值为整数
+    reference 属性取值可以引用一个值
+    -->
+    <declare-styleable name="CustomToolBar">
+        <attr name="titleText" format="string|reference" />
+        <attr name="myTitleTextColor" format="color|reference" />
+        <attr name="titleTextSize" format="dimension|reference" />
+        <attr name="leftImageSrc" format="reference" />
+        <attr name="rightImageSrc" format="reference" />
+    </declare-styleable>
+</resources>
