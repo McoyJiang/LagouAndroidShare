@@ -1,0 +1,156 @@
+package material.danny_jiang.com.lagoubitmap.views.listener;
+
+/**
+ * 　　　┏┓　　　┏┓
+ * 　　┏┛┻━━━┛┻┓
+ * 　　┃　　　　　　　┃
+ * 　　┃　　　━　　　┃
+ * 　　┃　┳┛　┗┳　┃
+ * 　　┃　　　　　　　┃
+ * 　　┃　　　┻　　　┃
+ * 　　┃　　　　　　　┃
+ * 　　┗━┓　　　┏━┛
+ * 　　　　┃　　　┃ 神兽保佑
+ * 　　　　┃　　　┃ 代码无BUG！
+ * 　　　　┃　　　┗━━━┓
+ * 　　　　┃　　　　　　　┣┓
+ * 　　　　┃　　　　　　　┏┛
+ * 　　　　┗┓┓┏━┳┓┏┛
+ * 　　　　　┃┫┫　┃┫┫
+ * 　　　　　┗┻┛　┗┻┛
+ * <p>
+ * Created by Danny 姜 on 2020-05-15.
+ */
+
+import android.content.Context;
+import android.graphics.PointF;
+import android.view.MotionEvent;
+
+public class MyGestureDetector extends BaseGestureDetector {
+
+    private PointF mCurrentPointer;
+    private PointF mPrePointer;
+    //仅仅为了减少创建内存
+    private PointF mDeltaPointer = new PointF();
+
+    //用于记录最终结果，并返回
+    private PointF mExtenalPointer = new PointF();
+
+    private OnMoveGestureListener mListenter;
+
+
+    public MyGestureDetector(Context context, OnMoveGestureListener listener) {
+        super(context);
+        mListenter = listener;
+    }
+
+    @Override
+    protected void handleInProgressEvent(MotionEvent event) {
+        int actionCode = event.getAction() & MotionEvent.ACTION_MASK;
+        switch (actionCode) {
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                mListenter.onMoveEnd(this);
+                resetState();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                updateStateByEvent(event);
+                boolean update = mListenter.onMove(this);
+                if (update) {
+                    mPreMotionEvent.recycle();
+                    mPreMotionEvent = MotionEvent.obtain(event);
+                }
+                break;
+
+        }
+    }
+
+    @Override
+    protected void handleStartProgressEvent(MotionEvent event) {
+        int actionCode = event.getAction() & MotionEvent.ACTION_MASK;
+        switch (actionCode) {
+            case MotionEvent.ACTION_DOWN:
+                resetState();//防止没有接收到CANCEL or UP ,保险起见
+                mPreMotionEvent = MotionEvent.obtain(event);
+                updateStateByEvent(event);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                mGestureInProgress = mListenter.onMoveBegin(this);
+                break;
+        }
+
+    }
+
+    protected void updateStateByEvent(MotionEvent event) {
+        final MotionEvent prev = mPreMotionEvent;
+
+        mPrePointer = caculateFocalPointer(prev);
+        mCurrentPointer = caculateFocalPointer(event);
+
+        //Log.e("TAG", mPrePointer.toString() + " ,  " + mCurrentPointer);
+
+        boolean mSkipThisMoveEvent = prev.getPointerCount() != event.getPointerCount();
+
+        //Log.e("TAG", "mSkipThisMoveEvent = " + mSkipThisMoveEvent);
+        mExtenalPointer.x = mSkipThisMoveEvent ? 0 : mCurrentPointer.x - mPrePointer.x;
+        mExtenalPointer.y = mSkipThisMoveEvent ? 0 : mCurrentPointer.y - mPrePointer.y;
+
+    }
+
+    /**
+     * 根据event计算多指中心点
+     *
+     * @param event
+     * @return
+     */
+    private PointF caculateFocalPointer(MotionEvent event) {
+        final int count = event.getPointerCount();
+        float x = 0, y = 0;
+        for (int i = 0; i < count; i++) {
+            x += event.getX(i);
+            y += event.getY(i);
+        }
+
+        x /= count;
+        y /= count;
+
+        return new PointF(x, y);
+    }
+
+
+    public float getMoveX() {
+        return mExtenalPointer.x;
+
+    }
+
+    public float getMoveY() {
+        return mExtenalPointer.y;
+    }
+
+
+    public interface OnMoveGestureListener {
+        public boolean onMoveBegin(MyGestureDetector detector);
+
+        public boolean onMove(MyGestureDetector detector);
+
+        public void onMoveEnd(MyGestureDetector detector);
+    }
+
+    public static class SimpleGestureDetector implements OnMoveGestureListener {
+
+        @Override
+        public boolean onMoveBegin(MyGestureDetector detector) {
+            return true;
+        }
+
+        @Override
+        public boolean onMove(MyGestureDetector detector) {
+            return false;
+        }
+
+        @Override
+        public void onMoveEnd(MyGestureDetector detector) {
+        }
+    }
+
+}
