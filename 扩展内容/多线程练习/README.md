@@ -19,3 +19,24 @@ public class Foo {
 请设计修改程序，以确保 second() 方法在 first() 方法之后被执行，third() 方法在 second() 方法之后被执行。
 
 ```
+
+
+[FooBar](https://github.com/McoyJiang/LagouAndroidShare/blob/master/%E6%89%A9%E5%B1%95%E5%86%85%E5%AE%B9/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BB%83%E4%B9%A0/FooBar.java)
+```
+class FooBar {
+  public void foo() {
+    for (int i = 0; i < n; i++) {
+      print("foo");
+    }
+  }
+
+  public void bar() {
+    for (int i = 0; i < n; i++) {
+      print("bar");
+    }
+  }
+}
+
+两个不同的线程将会共用一个 FooBar 实例。其中一个线程将会调用 foo() 方法，另一个线程将会调用 bar() 方法。
+请设计修改程序，以确保 "foobar" 被输出 n 次。
+```
